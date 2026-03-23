@@ -220,14 +220,13 @@ def main():
                 display_gui(2)
 
           #State 3:  Closed Lid, Unarmed System, Box is Full, Buzzer is Off, Lid is Unlocked
-          elif not Lid_Switch and not Weight_Sensor and not Arming_System:
-              set_buzzer(False)
-              display_gui(3)
-              
-              # In cron mode, always auto-arm without waiting for input
-              Arming_System = True
-              set_lock_status(True)
-              display_gui(4)
+            elif not Lid_Switch and not Weight_Sensor and not Arming_System:
+                set_buzzer(False)
+                display_gui(3)
+                # In cron mode, always auto-arm without waiting for input
+                Arming_System = True
+                set_lock_status(True)
+                display_gui(4)
 
             #State 4:  Closed Lid, Armed System, Box is Full, Buzzer is Off, Lid is Locked
             elif not Lid_Switch and not Weight_Sensor and Arming_System:
