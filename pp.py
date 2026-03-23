@@ -4,6 +4,9 @@ import time
 import sys
 import select
 
+# Autostart detection
+AUTOSTART = os.getenv("AUTOSTART", "0") == "1"
+
 # GPIO setup
 LID_SWITCH_PIN = 17
 WEIGHT_SENSOR_PIN = 25
@@ -220,17 +223,23 @@ def main():
             elif not Lid_Switch and not Weight_Sensor and not Arming_System:
                 set_buzzer(False)
                 display_gui(3)
-                print("\nControls:")
-                print("  [A] Arm system")
-                print("  [U] Unarm system")
-                print("  [Q] Quit")
-                # Wait for input with 10-second timeout
-                ready = select.select([sys.stdin], [], [], 10)
-                if ready[0]:
-                    choice = input("\nSelect option: ").lower()
+                
+                if AUTOSTART:
+                    # In autostart mode, skip user input and auto-arm
+                    choice = "a"
                 else:
-                    choice = "a"  # Default to arming if no input
-                print("\nNo input detected. Auto-arming system...")
+                    # Manual mode - show controls and wait for input
+                    print("\nControls:")
+                    print("  [A] Arm system")
+                    print("  [U] Unarm system")
+                    print("  [Q] Quit")
+                    # Wait for input with 10-second timeout
+                    ready = select.select([sys.stdin], [], [], 10)
+                    if ready[0]:
+                        choice = input("\nSelect option: ").lower()
+                    else:
+                        choice = "a"  # Default to arming if no input
+                    print("\nNo input detected. Auto-arming system...")
                 
                 if choice == "a":
                     Arming_System = True
