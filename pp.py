@@ -1,6 +1,8 @@
 import os
 import RPi.GPIO as GPIO
 import time
+import sys
+import select
 
 # GPIO setup
 LID_SWITCH_PIN = 17
@@ -222,7 +224,14 @@ def main():
                 print("  [A] Arm system")
                 print("  [U] Unarm system")
                 print("  [Q] Quit")
-                choice = input("\nSelect option: ").lower()
+                # Wait for input with 10-second timeout
+                ready = select.select([sys.stdin], [], [], 10)
+                if ready[0]:
+                    choice = input("\nSelect option: ").lower()
+                else:
+                    choice = "a"  # Default to arming if no input
+                print("\nNo input detected. Auto-arming system...")
+                
                 if choice == "a":
                     Arming_System = True
                     set_lock_status(True)
